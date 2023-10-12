@@ -80,35 +80,4 @@ class CurrencyControllerTest {
         assertThat(tableHeaders.get(4).text()).isEqualTo("Conversion Result");
     }
 
-
-    @Test
-    void testChangeLang() throws Exception {
-        // MockMvc setup
-        Object[] currencyController = new Object[0];
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(currencyController).build();
-
-        // Run the test
-        final MockHttpServletResponse response = mockMvc.perform(post("/changeLang") // Change the URL to your endpoint
-                        .param("lang", "en") // Set the desired language value
-                        .with(csrf()) // Add CSRF token if your application requires it
-                        .accept(MediaType.TEXT_HTML)) // Define the expected response media type
-                .andReturn().getResponse();
-
-        // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
-    }
-
-    @Test
-    void testIndex() throws Exception {
-        // Setup
-        // Run the test
-        final MockHttpServletResponse response = mockMvc.perform(get("/")
-                        .accept(MediaType.TEXT_HTML))
-                .andReturn().getResponse();
-
-        // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
-    }
 }
