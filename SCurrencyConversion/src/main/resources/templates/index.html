@@ -86,6 +86,9 @@
             <button type="submit" th:text="#{button.changeLanguage}">Change Language</button>
         </form>
     </div>
+
+    <div style="margin-top: 20px;"></div>
+
     <form th:action="@{/currency-conversion}" method="get" >
         <label for="fromCurrency" th:text="#{label.fromCurrency}">From Currency:</label>
         <select id="fromCurrency" name="fromCurrency" required>
@@ -101,6 +104,8 @@
             <option value="SGD">SGD</option>
         </select>
 
+        <div style="margin-top: 20px;"></div>
+
         <label for="toCurrency" th:text="#{label.toCurrency}">To Currency:</label>
         <select id="toCurrency" name="toCurrency" required>
             <option value="INR">INR</option> <!-- INR is mandatory -->
@@ -115,11 +120,17 @@
             <option value="SGD">SGD</option>
         </select>
 
+        <div style="margin-top: 20px;"></div>
+
         <label for="amount" th:text="#{label.amount}">Amount:</label>
-        <input type="text" id="amount" name="amount">
+        <input type="text" id="amount" name="amount" required>
+        <span id="amountError" class="error" style="color: red;"></span>
+
+        <div style="margin-top: 20px;"></div>
 
         <label for="date" th:text="#{label.date}">Date:</label>
-        <input type="date" id="date" name="date" max="" value="" required>
+       <!-- <input type="date" id="date" name="date" max="" value="" required>-->
+        <input type="date" id="date" name="date" min="[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}]]" required>
 
         <button type="submit" th:text="#{button.convert}">Convert</button>
     </form>
@@ -132,29 +143,58 @@
 </div>
 
 <script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", function() {
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementById("date").setAttribute("max", today);
-        document.getElementById("date").setAttribute("value", today);
+
+    function setMaxDateToToday() {
+       var currentDate = new Date();
+       var day = currentDate.getDate();
+       var month = currentDate.getMonth() + 1; // Months are 0-indexed, so we add 1
+       var year = currentDate.getFullYear();
+
+       if (day < 10) day = '0' + day;
+       if (month < 10) month = '0' + month;
+
+       var formattedDate = year + '-' + month + '-' + day;
+       document.getElementById('date').max = formattedDate;
+   }
+
+   // Call the function to set the max date to today's date
+   setMaxDateToToday();
+
+   function changeLanguage(selectElement) {
+       var selectedLocale = selectElement.value;
+       var currentUrl = window.location.href;
+       var newUrl = currentUrl.replace(/(\?|&)lang=\w+/, "$1lang=" + selectedLocale);
+       setCookie("local-cookie", selectedLocale, 365);
+       window.location.href = newUrl;
+   }
+
+   function setCookie(name, value, days) {
+       var expires = "";
+       if (days) {
+           var date = new Date();
+           date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+           expires = "; expires=" + date.toUTCString();
+       }
+       document.cookie = name + "=" + value + expires + "; path=/";
+   }
+
+     document.addEventListener("DOMContentLoaded", function () {
+        var amountInput = document.getElementById("amount");
+        var amountError = document.getElementById("amountError");
+
+        amountInput.addEventListener("input", function () {
+            var inputValue = amountInput.value;
+            if (!/^\d+$/.test(inputValue)) {
+                // Show the error message
+                amountError.innerText = "Please enter a valid number.";
+                amountError.style.display = "inline";
+            } else {
+                // Hide the error message
+                amountError.innerText = "";
+                amountError.style.display = "none";
+            }
+        });
     });
-
-    function changeLanguage(selectElement) {
-        var selectedLocale = selectElement.value;
-        var currentUrl = window.location.href;
-        var newUrl = currentUrl.replace(/(\?|&)lang=\w+/, "$1lang=" + selectedLocale);
-        setCookie("local-cookie", selectedLocale, 365);
-        window.location.href = newUrl;
-    }
-
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + value + expires + "; path=/";
-    }
 </script>
 </body>
 </html>

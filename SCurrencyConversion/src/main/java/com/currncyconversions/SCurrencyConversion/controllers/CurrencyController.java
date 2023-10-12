@@ -60,10 +60,11 @@ public class CurrencyController {
             @RequestParam("date") String dateStr,
             Model model) {
         // Check for invalid input
-        if (fromCurrency == null || toCurrency == null || amount == null) {
+        if (fromCurrency == null  || toCurrency == null || amount == null ) {
             model.addAttribute("convertedAmount", null);
-            return "index"; // Return the same page
+            return "error_page"; // Return the same page
         }
+
 
         try {
             String apiUrl = "https://api.apilayer.com/fixer/convert?" +
