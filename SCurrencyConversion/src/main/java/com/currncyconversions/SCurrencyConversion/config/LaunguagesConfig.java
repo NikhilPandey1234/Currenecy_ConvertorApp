@@ -1,3 +1,4 @@
+/*
 package com.currncyconversions.SCurrencyConversion.config;
 
 import org.springframework.context.annotation.Bean;
@@ -41,3 +42,4 @@ public class LaunguagesConfig implements WebMvcConfigurer {
 
 
 }
+*/

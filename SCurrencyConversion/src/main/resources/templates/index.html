@@ -75,25 +75,51 @@
 <h1 th:text="#{app.currency}">Currency Converter App</h1>
 
 <div class="container">
-    <label for="locale" th:text="#{label.language}">Language:</label>
-    <select name="locale" id="locale" onchange="changeLocale(this);">
-        <option value="en" th:text="#{switch-en}">English</option>
-        <option value="fr" th:text="#{switch-fr}">French</option>
-        <option value="rs" th:text="#{switch-rs}">Russian</option>
-    </select>
+    <div class="language-dropdown">
+        <form th:action="@{/changeLang}" method="post">
+            <select name="lang" id="selectedLanguage" onchange="changeLanguage(this);">
+                <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                <!--<option value="fr" th:selected="${#locale.language == 'fr'}">French</option> -->
+                <option value="sp" th:selected="${#locale.language == 'sp'}">Spanish</option>
+                <!-- Add more language options here -->
+            </select>
+            <button type="submit" th:text="#{button.changeLanguage}">Change Language</button>
+        </form>
+    </div>
+    <form th:action="@{/currency-conversion}" method="get" >
+        <label for="fromCurrency" th:text="#{label.fromCurrency}">From Currency:</label>
+        <select id="fromCurrency" name="fromCurrency" required>
+            <option value="INR">INR</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="JPY">JPY</option>
+            <option value="AUD">AUD</option>
+            <option value="CAD">CAD</option>
+            <option value="CHF">CHF</option>
+            <option value="CNY">CNY</option>
+            <option value="SGD">SGD</option>
+        </select>
 
-    <form th:action="@{/currency-conversion}" method="get">
-        <label for="fromCurrency">From Currency:</label>
-        <input type="text" id="fromCurrency" name="fromCurrency" placeholder="Enter currency code" required>
+        <label for="toCurrency" th:text="#{label.toCurrency}">To Currency:</label>
+        <select id="toCurrency" name="toCurrency" required>
+            <option value="INR">INR</option> <!-- INR is mandatory -->
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="JPY">JPY</option>
+            <option value="AUD">AUD</option>
+            <option value="CAD">CAD</option>
+            <option value="CHF">CHF</option>
+            <option value="CNY">CNY</option>
+            <option value="SGD">SGD</option>
+        </select>
 
-        <label for="toCurrency">To Currency:</label>
-        <input type="text" id="toCurrency" name="toCurrency" placeholder="Enter currency code" required>
-
-        <label for="amount">Amount:</label>
+        <label for="amount" th:text="#{label.amount}">Amount:</label>
         <input type="text" id="amount" name="amount">
 
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date">
+        <label for="date" th:text="#{label.date}">Date:</label>
+        <input type="date" id="date" name="date" max="" value="" required>
 
         <button type="submit" th:text="#{button.convert}">Convert</button>
     </form>
@@ -102,14 +128,20 @@
         <p>Converted Amount: <span th:text="${convertedAmount}"></span></p>
     </div>
 
-    <a href="/conversion-history" style="text-decoration: none; color: #3498db; display: block; text-align: center;">View Conversion History</a>
+    <a th:href="@{/conversion-history}" th:text="#{link.viewHistory}" style="text-decoration: none; color: #3498db; display: block; text-align: center;">View Conversion History</a>
 </div>
 
 <script th:inline="javascript">
-    function changeLocale(selectElement) {
+    document.addEventListener("DOMContentLoaded", function() {
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("date").setAttribute("max", today);
+        document.getElementById("date").setAttribute("value", today);
+    });
+
+    function changeLanguage(selectElement) {
         var selectedLocale = selectElement.value;
         var currentUrl = window.location.href;
-        var newUrl = currentUrl.replace(/\?lang=\w+/, "?lang=" + selectedLocale);
+        var newUrl = currentUrl.replace(/(\?|&)lang=\w+/, "$1lang=" + selectedLocale);
         setCookie("local-cookie", selectedLocale, 365);
         window.location.href = newUrl;
     }
