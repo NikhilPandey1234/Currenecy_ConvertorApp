@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{app.currency}">Currency Converter App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #267bb5;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="#{app.currency}">Currency Converter App</h1>
+
+<div class="container">
+    <label for="locale" th:text="#{label.language}">Language:</label>
+    <select name="locale" id="locale" onchange="changeLocale(this);">
+        <option value="en" th:text="#{switch-en}">English</option>
+        <option value="fr" th:text="#{switch-fr}">French</option>
+        <option value="rs" th:text="#{switch-rs}">Russian</option>
+    </select>
+
+    <form th:action="@{/currency-conversion}" method="get">
+        <label for="fromCurrency">From Currency:</label>
+        <input type="text" id="fromCurrency" name="fromCurrency" placeholder="Enter currency code" required>
+
+        <label for="toCurrency">To Currency:</label>
+        <input type="text" id="toCurrency" name="toCurrency" placeholder="Enter currency code" required>
+
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" name="amount">
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
+
+        <button type="submit" th:text="#{button.convert}">Convert</button>
+    </form>
+
+    <div id="resultDiv" class="result" th:if="${convertedAmount != null}">
+        <p>Converted Amount: <span th:text="${convertedAmount}"></span></p>
+    </div>
+
+    <a href="/conversion-history" style="text-decoration: none; color: #3498db; display: block; text-align: center;">View Conversion History</a>
+</div>
+
+<script th:inline="javascript">
+    function changeLocale(selectElement) {
+        var selectedLocale = selectElement.value;
+        var currentUrl = window.location.href;
+        var newUrl = currentUrl.replace(/\?lang=\w+/, "?lang=" + selectedLocale);
+        setCookie("local-cookie", selectedLocale, 365);
+        window.location.href = newUrl;
+    }
+
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+</script>
+</body>
+</html>
