@@ -1,6 +1,7 @@
 package com.currncyconversions.SCurrencyConversion.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -22,9 +23,11 @@ public class CurrencyRates {
     private String fromCurrency;
     private String toCurrency;
 
+
     private BigDecimal amount;
     private String date;
     private String conversionResult;
+    private BigDecimal todayRate;
 
 
 

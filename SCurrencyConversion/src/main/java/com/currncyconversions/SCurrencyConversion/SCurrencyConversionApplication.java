@@ -14,12 +14,6 @@ public class SCurrencyConversionApplication {
 		SpringApplication.run(SCurrencyConversionApplication.class, args);
 	}
 
-	/*@Bean
-	public ResourceBundleMessageSource messageSource() {
-		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.setBasenames("messages", "messages_fr", "messages_rs", "messages_en");
-		source.setDefaultEncoding("UTF-8");
-		return source;
-	}*/
+
 
 }

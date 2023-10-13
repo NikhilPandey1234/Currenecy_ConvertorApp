@@ -77,7 +77,7 @@
 <div class="container">
     <div class="language-dropdown">
         <form th:action="@{/changeLang}" method="post">
-            <select name="lang" id="selectedLanguage" onchange="changeLanguage(this);">
+            <select name="lang" id="selectedLanguage">
                 <option value="en" th:selected="${#locale.language == 'en'}">English</option>
                 <!--<option value="fr" th:selected="${#locale.language == 'fr'}">French</option> -->
                 <option value="sp" th:selected="${#locale.language == 'sp'}">Spanish</option>
@@ -108,7 +108,6 @@
 
         <label for="toCurrency" th:text="#{label.toCurrency}">To Currency:</label>
         <select id="toCurrency" name="toCurrency" required>
-            <option value="INR">INR</option> <!-- INR is mandatory -->
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
             <option value="GBP">GBP</option>
@@ -184,7 +183,7 @@
 
         amountInput.addEventListener("input", function () {
             var inputValue = amountInput.value;
-            if (!/^\d+$/.test(inputValue)) {
+            if (!/^\d+(\.\d+)?$/.test(inputValue)) {
                 // Show the error message
                 amountError.innerText = "Please enter a valid number.";
                 amountError.style.display = "inline";
